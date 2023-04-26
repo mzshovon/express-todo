@@ -19,6 +19,21 @@ router.get('/', async(req, res) => {
     }
 });
 
+router.get('/inactiveList', async(req, res) => {
+    try {
+        const todo = new Todo();
+        const result = await todo.findInactive();
+        res.status(200).json({
+            message : "TODO Data",
+            data : result
+        });
+    } catch (err) {
+        res.status(500).json({
+            message : err
+        })
+    }
+});
+
 router.get('/:id', async(req, res) => {
     try {
         let result = await Todo.find({_id : req.params.id}).select({ _id : 0, __v : 0});
