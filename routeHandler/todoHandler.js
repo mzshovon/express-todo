@@ -1,20 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const route = express.Router();
+const router = express.routerr();
 const todoSchema = require('../schemas/todoSchema');
 const Todo = new mongoose.model('Todo',todoSchema);
 
 
-route.get('/', async(req, res) => {
+router.get('/', async(req, res) => {
 
 });
 
-route.get('/:id', async(req, res) => {
+router.get('/:id', async(req, res) => {
 
 });
 
 // Store a todo request
-route.post('/', async(req, res) => {
+router.post('/', async(req, res) => {
     const newTodo = new Todo(req.body);
     await newTodo.save((err) => {
         if(err) {
@@ -29,16 +29,16 @@ route.post('/', async(req, res) => {
     })
 });
 
-route.post('/multiple', async(req, res) => {
+router.post('/multiple', async(req, res) => {
 
 });
 
-route.put('/:id', async(req, res) => {
+router.put('/:id', async(req, res) => {
 
 });
 
-route.delete('/:id', async(req, res) => {
+router.delete('/:id', async(req, res) => {
 
 });
 
-module.exports = route;
+module.exports = router;
