@@ -21,6 +21,16 @@ mongoose.connect('mongodb://localhost/todos', {
 app.use('/todo', todoHandler);
 app.use('/user', userHandler);
 
+// default error handler
+const errorHandler = (err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);
+    }
+    res.status(500).json({ error: err });
+}
+
+app.use(errorHandler);
+
 app.listen(3939, () => {
     console.log('Listening to 3939');
 })

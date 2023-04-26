@@ -32,8 +32,15 @@ router.post('/login', async(req, res) => {
         if(findUser && findUser.length > 0) {
             const validPassword = await bcrypt.compare(req.body.password, findUser[0].password);
             if(validPassword) {
+                const token = jwt.sign({
+                    usernmae : findUser[0].username,
+                    userId : findUser[0]._id,
+                }, process.env.JWT_TOKEN, {
+                    expiresIn : '1h'
+                });
                 res.status(200).json({
-                    message : "User Logged in Successfully"
+                    message : "User Logged in Successfully",
+                    accessTOke : token,
                 });
             } else {
                 res.status(403).json({

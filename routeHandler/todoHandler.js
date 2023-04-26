@@ -2,10 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const todoSchema = require('../schemas/todoSchema');
+const userVerificationMiddleware = require('../middlewares/userVerificationMiddleware');
 const Todo = new mongoose.model('Todo',todoSchema);
 
 
-router.get('/', async(req, res) => {
+router.get('/', userVerificationMiddleware, async(req, res) => {
     try {
         let result = await Todo.find({}).select({ _id : 0, __v : 0}).limit(10);
         res.status(200).json({
@@ -19,7 +20,7 @@ router.get('/', async(req, res) => {
     }
 });
 
-router.get('/inactiveList', async(req, res) => {
+router.get('/inactiveList', userVerificationMiddleware,  async(req, res) => {
     try {
         const todo = new Todo();
         const result = await todo.findInactive();
@@ -34,7 +35,7 @@ router.get('/inactiveList', async(req, res) => {
     }
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', userVerificationMiddleware,  async(req, res) => {
     try {
         let result = await Todo.find({_id : req.params.id}).select({ _id : 0, __v : 0});
         res.status(200).json({
@@ -49,7 +50,7 @@ router.get('/:id', async(req, res) => {
 });
 
 // Store a todo request
-router.post('/', async(req, res) => {
+router.post('/', userVerificationMiddleware, async(req, res) => {
     try {
         const newTodo = new Todo(req.body);
         await newTodo.save();
@@ -63,7 +64,7 @@ router.post('/', async(req, res) => {
     }
 });
 
-router.post('/multiple', async(req, res) => {
+router.post('/multiple', userVerificationMiddleware, async(req, res) => {
     try {
         await Todo.insertMany(req.body);
         res.status(200).json({
@@ -76,7 +77,7 @@ router.post('/multiple', async(req, res) => {
     }
 });
 
-router.put('/:id', async(req, res) => {
+router.put('/:id', userVerificationMiddleware, async(req, res) => {
     try {
         await Todo.updateMany({_id : req.params.id}, {status : 'inactive'});
         res.status(200).json({
@@ -89,7 +90,7 @@ router.put('/:id', async(req, res) => {
     }
 });
 
-router.delete('/:id', async(req, res) => {
+router.delete('/:id', userVerificationMiddleware, async(req, res) => {
     try {
         await Todo.deleteOne({_id : req.params.id});
         res.status(200).json({
