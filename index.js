@@ -4,9 +4,13 @@ const dotenv = require('dotenv');
 const todoHandler = require('./routeHandler/todoHandler');
 const userHandler = require('./routeHandler/userHandler');
 
+// For routing
 const app = express();
+
+// For getting .env property
 dotenv.config();
 
+// For initializing form request property
 app.use(express.json());
 
 // MongoDB conenctivity
@@ -21,7 +25,7 @@ mongoose.connect('mongodb://localhost/todos', {
 app.use('/todo', todoHandler);
 app.use('/user', userHandler);
 
-// default error handler
+// Default error handler
 const errorHandler = (err, req, res, next) => {
     if (res.headersSent) {
         return next(err);
@@ -29,8 +33,10 @@ const errorHandler = (err, req, res, next) => {
     res.status(500).json({ error: err });
 }
 
+// Initializing error handler
 app.use(errorHandler);
 
+// Listening to the port
 app.listen(3939, () => {
     console.log('Listening to 3939');
 })

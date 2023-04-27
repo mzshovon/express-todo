@@ -2,13 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const todoSchema = require('../schemas/todoSchema');
+const userSchema = require('../schemas/userSchema');
 const userVerificationMiddleware = require('../middlewares/userVerificationMiddleware');
 const Todo = new mongoose.model('Todo',todoSchema);
+const User = new mongoose.model('User',userSchema);
 
 
 router.get('/', userVerificationMiddleware, async(req, res) => {
     try {
-        let result = await Todo.find({}).select({ _id : 0, __v : 0}).limit(10);
+        let result = await Todo.find({}).populate("user", "name username -_id").select({ _id : 0, __v : 0}).limit(10);
         res.status(200).json({
             message : "TODO Data",
             data : result
@@ -52,8 +54,20 @@ router.get('/:id', userVerificationMiddleware,  async(req, res) => {
 // Store a todo request
 router.post('/', userVerificationMiddleware, async(req, res) => {
     try {
-        const newTodo = new Todo(req.body);
-        await newTodo.save();
+        const newTodo = new Todo({
+            ...req.body,
+            user : req.userId
+        });
+        const insertTodo = await newTodo.save();
+        if (insertTodo) {
+            await User.updateOne({
+                _id : req.userId
+            }, {
+                $push : {
+                    todo : insertTodo._id
+                }
+            });
+        }
         res.status(200).json({
             message : "Data Stored Successfully"
         });

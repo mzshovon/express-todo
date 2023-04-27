@@ -22,7 +22,13 @@ const userSchema = mongoose.Schema({
     updated_at : {
         type : Date,
         default : Date.now
-    }
+    },
+    todo : [
+        {
+            type : mongoose.Types.ObjectId,
+            ref : "Todo"
+        }
+    ]
 });
 
 module.exports = userSchema;

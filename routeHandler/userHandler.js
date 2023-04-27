@@ -59,4 +59,18 @@ router.post('/login', async(req, res) => {
     }
 });
 
+router.get('/all', async(req, res) => {
+    try {
+        const getAllUsers = await User.find({}).populate("todo", "-__v")
+        res.status(200).json({
+            message : "Users all data with todos",
+            data : getAllUsers
+        });
+    } catch (err) {
+        res.status(500).json({
+            message : err
+        })
+    }
+});
+
 module.exports = router;
